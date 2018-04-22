@@ -10,6 +10,7 @@ target 'OffsiteTest' do
   pod 'RxAlamofire', '~> 4.2'
   pod 'Kingfisher', '~> 4.0'
   pod 'Cosmos', '~> 15.0'
+  pod 'SnapKit', '~> 4.0.0'
 
   target 'OffsiteTestTests' do
     inherit! :search_paths

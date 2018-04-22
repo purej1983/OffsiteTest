@@ -7,71 +7,71 @@
 //
 
 import Foundation
-public struct AppDetailResponse : Codable {
-	let resultCount : Int?
-	let results : [Results]?
+public struct AppDetailResponse: Codable {
+    let resultCount: Int?
+    let results: [Results]?
 
-	enum CodingKeys: String, CodingKey {
+    enum CodingKeys: String, CodingKey {
 
-		case resultCount = "resultCount"
-		case results = "results"
-	}
+        case resultCount = "resultCount"
+        case results = "results"
+    }
 
-	public init(from decoder: Decoder) throws {
-		let values = try decoder.container(keyedBy: CodingKeys.self)
-		resultCount = try values.decodeIfPresent(Int.self, forKey: .resultCount)
-		results = try values.decodeIfPresent([Results].self, forKey: .results)
-	}
+    public init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        resultCount = try values.decodeIfPresent(Int.self, forKey: .resultCount)
+        results = try values.decodeIfPresent([Results].self, forKey: .results)
+    }
 
 }
 
-public struct Results : Codable {
-    let screenshotUrls : [String]?
-    let ipadScreenshotUrls : [String]?
-    let appletvScreenshotUrls : [String]?
-    let artworkUrl512 : String?
-    let artistViewUrl : String?
-    let artworkUrl60 : String?
-    let artworkUrl100 : String?
-    let advisories : [String]?
-    let kind : String?
-    let features : [String]?
-    let supportedDevices : [String]?
-    let isGameCenterEnabled : Bool?
-    let averageUserRatingForCurrentVersion : Double?
-    let languageCodesISO2A : [String]?
-    let fileSizeBytes : Int?
-    let userRatingCountForCurrentVersion : Int?
-    let trackContentRating : String?
-    let trackCensoredName : String?
-    let trackViewUrl : String?
-    let contentAdvisoryRating : String?
-    let minimumOsVersion : Double?
-    let currentVersionReleaseDate : String?
-    let sellerName : String?
-    let primaryGenreId : Int?
-    let primaryGenreName : String?
-    let isVppDeviceBasedLicensingEnabled : Bool?
-    let currency : String?
-    let wrapperType : String?
-    let version : String?
-    let artistId : Int?
-    let artistName : String?
-    let genres : [String]?
-    let price : Int?
-    let description : String?
-    let bundleId : String?
-    let releaseDate : String?
-    let trackId : Int?
-    let trackName : String?
-    let genreIds : [Int]?
-    let releaseNotes : String?
-    let formattedPrice : String?
-    let averageUserRating : Int?
-    let userRatingCount : Int?
-    
+public struct Results: Codable {
+    let screenshotUrls: [String]?
+    let ipadScreenshotUrls: [String]?
+    let appletvScreenshotUrls: [String]?
+    let artworkUrl512: String?
+    let artistViewUrl: String?
+    let artworkUrl60: String?
+    let artworkUrl100: String?
+    let advisories: [String]?
+    let kind: String?
+    let features: [String]?
+    let supportedDevices: [String]?
+    let isGameCenterEnabled: Bool?
+    let averageUserRatingForCurrentVersion: Double?
+    let languageCodesISO2A: [String]?
+    let fileSizeBytes: String?
+    let userRatingCountForCurrentVersion: Int?
+    let trackContentRating: String?
+    let trackCensoredName: String?
+    let trackViewUrl: String?
+    let contentAdvisoryRating: String?
+    let minimumOsVersion: String?
+    let currentVersionReleaseDate: String?
+    let sellerName: String?
+    let primaryGenreId: Int?
+    let primaryGenreName: String?
+    let isVppDeviceBasedLicensingEnabled: Bool?
+    let currency: String?
+    let wrapperType: String?
+    let version: String?
+    let artistId: Int?
+    let artistName: String?
+    let genres: [String]?
+    let price: Int?
+    let description: String?
+    let bundleId: String?
+    let releaseDate: String?
+    let trackId: Int?
+    let trackName: String?
+    let genreIds: [String]?
+    let releaseNotes: String?
+    let formattedPrice: String?
+    let averageUserRating: Double?
+    let userRatingCount: Int?
+
     enum CodingKeys: String, CodingKey {
-        
+
         case screenshotUrls = "screenshotUrls"
         case ipadScreenshotUrls = "ipadScreenshotUrls"
         case appletvScreenshotUrls = "appletvScreenshotUrls"
@@ -116,7 +116,7 @@ public struct Results : Codable {
         case averageUserRating = "averageUserRating"
         case userRatingCount = "userRatingCount"
     }
-    
+
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         screenshotUrls = try values.decodeIfPresent([String].self, forKey: .screenshotUrls)
@@ -133,13 +133,13 @@ public struct Results : Codable {
         isGameCenterEnabled = try values.decodeIfPresent(Bool.self, forKey: .isGameCenterEnabled)
         averageUserRatingForCurrentVersion = try values.decodeIfPresent(Double.self, forKey: .averageUserRatingForCurrentVersion)
         languageCodesISO2A = try values.decodeIfPresent([String].self, forKey: .languageCodesISO2A)
-        fileSizeBytes = try values.decodeIfPresent(Int.self, forKey: .fileSizeBytes)
+        fileSizeBytes = try values.decodeIfPresent(String.self, forKey: .fileSizeBytes)
         userRatingCountForCurrentVersion = try values.decodeIfPresent(Int.self, forKey: .userRatingCountForCurrentVersion)
         trackContentRating = try values.decodeIfPresent(String.self, forKey: .trackContentRating)
         trackCensoredName = try values.decodeIfPresent(String.self, forKey: .trackCensoredName)
         trackViewUrl = try values.decodeIfPresent(String.self, forKey: .trackViewUrl)
         contentAdvisoryRating = try values.decodeIfPresent(String.self, forKey: .contentAdvisoryRating)
-        minimumOsVersion = try values.decodeIfPresent(Double.self, forKey: .minimumOsVersion)
+        minimumOsVersion = try values.decodeIfPresent(String.self, forKey: .minimumOsVersion)
         currentVersionReleaseDate = try values.decodeIfPresent(String.self, forKey: .currentVersionReleaseDate)
         sellerName = try values.decodeIfPresent(String.self, forKey: .sellerName)
         primaryGenreId = try values.decodeIfPresent(Int.self, forKey: .primaryGenreId)
@@ -157,11 +157,11 @@ public struct Results : Codable {
         releaseDate = try values.decodeIfPresent(String.self, forKey: .releaseDate)
         trackId = try values.decodeIfPresent(Int.self, forKey: .trackId)
         trackName = try values.decodeIfPresent(String.self, forKey: .trackName)
-        genreIds = try values.decodeIfPresent([Int].self, forKey: .genreIds)
+        genreIds = try values.decodeIfPresent([String].self, forKey: .genreIds)
         releaseNotes = try values.decodeIfPresent(String.self, forKey: .releaseNotes)
         formattedPrice = try values.decodeIfPresent(String.self, forKey: .formattedPrice)
-        averageUserRating = try values.decodeIfPresent(Int.self, forKey: .averageUserRating)
+        averageUserRating = try values.decodeIfPresent(Double.self, forKey: .averageUserRating)
         userRatingCount = try values.decodeIfPresent(Int.self, forKey: .userRatingCount)
     }
-    
+
 }
