@@ -27,8 +27,6 @@ final class MainViewModel {
     public let sFreeAppUpdated: PublishSubject<Bool> = PublishSubject<Bool>()
     public let sFirstLoad: PublishSubject<Void> = PublishSubject<Void>()
 
-
-
     public func getData() {
         let topFreeApp = APIManager.Listing.getTopNFreeApps(n: 100)
         let topGrossing = APIManager.Listing.getTopNGrossingApps(n: 10)
@@ -46,18 +44,6 @@ final class MainViewModel {
                 self.gotGrossingApps(entry: grossing)
                 self.gotFreeApps(entry: free)
             }).disposed(by: disposeBag)
-    }
-
-    public func reloadPage() {
-        self.isFirstLoaded = false
-        self.clearData()
-        self.getData()
-    }
-    private func clearData() {
-        self.fullFreeApp.removeAll()
-        self.fullGrossingApp.removeAll()
-        self.paginatedFreeApp.removeAll()
-
     }
 
     private func gotGrossingApps(entry: [Entry]?) {
@@ -78,6 +64,9 @@ final class MainViewModel {
 
         if let entry = entry {
             self.fullFreeApp.append(contentsOf: entry.map { AppItemViewModel.init(entry: $0) })
+            self.fullFreeApp.forEach { (item) in
+                print("appName: \(item.vAppName.value)")
+            }
             self.fetchPaginatedDataSource()
         } else {
             self.sFreeAppUpdated.onNext(true)
@@ -98,10 +87,11 @@ final class MainViewModel {
     }
 
     private func fetchPaginatedDataSource() {
+        
         Observable.from(self.fullFreeApp)
             .take(pageNo * pageSize + pageSize)
             .takeLast(pageSize)
-            .flatMap({ (appItemModel) -> Observable<(AppItemViewModel, AppDetailResponse)> in
+            .concatMap({ (appItemModel) -> Observable<(AppItemViewModel, AppDetailResponse)> in
                 let detailObservable = APIManager.Detail.getAppDetails(id: appItemModel.id)
                 return Observable.zip(Observable.just(appItemModel), detailObservable)
             })

@@ -42,10 +42,6 @@ final class MainViewController: UIViewController {
     }
 
     private func initReachability() {
-        reachability?.whenReachable = { reachability in
-            self.sbFilter.text = ""
-            self.vm.reloadPage()
-        }
         reachability?.whenUnreachable = { reachability in
             let alertView = UIAlertController.init(title: "Network is unreachable", message: "Please turn on mobile data or use Wi-Fi to access data", preferredStyle: .alert)
             let okAction = UIAlertAction.init(title: "OK", style: .default, handler: nil)
@@ -192,6 +188,7 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
         } else {
             cell.ivAppImage.makeCircle()
         }
+        cell.lblRowNum.text = String(indexPath.row + 1)
         return cell
     }
 
@@ -200,9 +197,9 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
             self.vm.fetchNextPage()
         }
     }
-
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-
+    
+    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        return nil
     }
 }
 

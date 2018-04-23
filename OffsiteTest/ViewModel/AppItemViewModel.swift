@@ -25,7 +25,7 @@ final class AppItemViewModel {
     public convenience init(entry: Entry) {
         let id = entry.id?.attributes?.imid ?? ""
         let name = entry.imname?.label ?? ""
-        let image = entry.imimage?.first?.label ?? ""
+        let image = entry.imimage?[1].label ?? ""
         let category = entry.category?.attributes?.label ?? ""
         let author = entry.imartist?.label ?? ""
         let summary = entry.summary?.label ?? ""
