@@ -13,6 +13,7 @@ target 'OffsiteTest' do
   pod 'Cosmos', '~> 15.0'
   pod 'SnapKit', '~> 4.0.0'
   pod 'RxCocoa', '~> 4.1'
+  pod 'ReachabilitySwift'
 
   target 'OffsiteTestTests' do
     inherit! :search_paths

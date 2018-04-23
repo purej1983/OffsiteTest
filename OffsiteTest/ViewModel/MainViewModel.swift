@@ -8,22 +8,27 @@
 
 import RxSwift
 final class MainViewModel {
-    let sIsLoading: PublishSubject<Bool> = PublishSubject()
-    let sError: PublishSubject<Error> = PublishSubject()
-    
     private var pageNo = 0
     private let pageSize = 10
     private let disposeBag = DisposeBag()
     private var fullGrossingApp: [AppItemViewModel] = []
     private var fullFreeApp: [AppItemViewModel] = []
     private var paginatedFreeApp: [AppItemViewModel] = []
+    private var keyword: String?
+    private var isFirstLoaded = false
+
+    public let sIsLoading: PublishSubject<Bool> = PublishSubject<Bool>()
+    public let sError: PublishSubject<Error> = PublishSubject<Error>()
+
     public let vFilterGrossingApp: Variable<[AppItemViewModel]> = Variable<[AppItemViewModel]>([])
     public let vFilterFreeApp: Variable<[AppItemViewModel]> = Variable<[AppItemViewModel]>([])
 
-    public let sGrossingAppUpdated: PublishSubject<Void> = PublishSubject<Void>()
-    public let sFreeAppUpdated: PublishSubject<Void> = PublishSubject<Void>()
-    private var keyword: String?
-    
+    public let sGrossingAppUpdated: PublishSubject<Bool> = PublishSubject<Bool>()
+    public let sFreeAppUpdated: PublishSubject<Bool> = PublishSubject<Bool>()
+    public let sFirstLoad: PublishSubject<Void> = PublishSubject<Void>()
+
+
+
     public func getData() {
         let topFreeApp = APIManager.Listing.getTopNFreeApps(n: 100)
         let topGrossing = APIManager.Listing.getTopNGrossingApps(n: 10)
@@ -32,15 +37,27 @@ final class MainViewModel {
             .map { ($0.0.feed?.entry, $0.1.feed?.entry) }
             .do(onError: { (error) in
                 self.sError.onNext(error)
-            }, onSubscribe: {
-
+            }, onSubscribed: {
+                self.sIsLoading.onNext(true)
             }, onDispose: {
-
+                self.sIsLoading.onNext(false)
             })
             .subscribe(onNext: { (grossing, free) in
                 self.gotGrossingApps(entry: grossing)
                 self.gotFreeApps(entry: free)
             }).disposed(by: disposeBag)
+    }
+
+    public func reloadPage() {
+        self.isFirstLoaded = false
+        self.clearData()
+        self.getData()
+    }
+    private func clearData() {
+        self.fullFreeApp.removeAll()
+        self.fullGrossingApp.removeAll()
+        self.paginatedFreeApp.removeAll()
+
     }
 
     private func gotGrossingApps(entry: [Entry]?) {
@@ -49,7 +66,10 @@ final class MainViewModel {
         if let entry = entry {
             self.fullGrossingApp.append(contentsOf: entry.map { AppItemViewModel.init(entry: $0) })
             self.vFilterGrossingApp.value.append(contentsOf: fullGrossingApp)
-            self.sGrossingAppUpdated.onNext(())
+            let isEmpty = self.vFilterGrossingApp.value.count == 0
+            self.sGrossingAppUpdated.onNext(isEmpty)
+        } else {
+            self.sGrossingAppUpdated.onNext(true)
         }
     }
 
@@ -59,9 +79,11 @@ final class MainViewModel {
         if let entry = entry {
             self.fullFreeApp.append(contentsOf: entry.map { AppItemViewModel.init(entry: $0) })
             self.fetchPaginatedDataSource()
+        } else {
+            self.sFreeAppUpdated.onNext(true)
         }
     }
-    
+
     func requireFetchNext(row: Int) -> Bool {
         if let query = self.keyword, !query.isEmpty {
             return false
@@ -69,12 +91,12 @@ final class MainViewModel {
             return row == self.vFilterFreeApp.value.count - 1 && row != fullFreeApp.count - 1
         }
     }
-    
+
     func fetchNextPage() {
         pageNo = pageNo + 1
         self.fetchPaginatedDataSource()
     }
-    
+
     private func fetchPaginatedDataSource() {
         Observable.from(self.fullFreeApp)
             .take(pageNo * pageSize + pageSize)
@@ -83,9 +105,20 @@ final class MainViewModel {
                 let detailObservable = APIManager.Detail.getAppDetails(id: appItemModel.id)
                 return Observable.zip(Observable.just(appItemModel), detailObservable)
             })
+            .do(onSubscribed: {
+                self.sIsLoading.onNext(true)
+            })
             .do(onDispose: {
                 self.vFilterFreeApp.value = self.paginatedFreeApp
-                self.sFreeAppUpdated.onNext(())
+                if !self.isFirstLoaded {
+                    self.isFirstLoaded = true
+                    self.sFirstLoad.onNext(())
+                }
+
+                let isEmpty = self.vFilterFreeApp.value.count == 0
+                self.sFreeAppUpdated.onNext(isEmpty)
+                self.sIsLoading.onNext(false)
+
             })
             .subscribe(onNext: { (appItemViewModel, detailResponse) in
                 let result = detailResponse.results?.first
@@ -94,18 +127,20 @@ final class MainViewModel {
                 self.paginatedFreeApp.append(appItemViewModel)
             }).disposed(by: disposeBag)
     }
-    
+
     func applyFilter(text: String?) {
         self.keyword = text
         guard let query = text, !query.isEmpty else {
             self.vFilterFreeApp.value = self.paginatedFreeApp
             self.vFilterGrossingApp.value = self.fullGrossingApp
-            self.sFreeAppUpdated.onNext(())
-            self.sGrossingAppUpdated.onNext(())
+            let isFreeAppEmpty = self.vFilterFreeApp.value.count == 0
+            let isGrossingAppEmpty = self.vFilterGrossingApp.value.count == 0
+            self.sFreeAppUpdated.onNext(isFreeAppEmpty)
+            self.sGrossingAppUpdated.onNext(isGrossingAppEmpty)
             return
         }
-        
-        
+
+
         var filterdFreeApp = [AppItemViewModel]()
         var filterdGrossingApp = [AppItemViewModel]()
         Observable
@@ -117,13 +152,14 @@ final class MainViewModel {
                 self.vFilterFreeApp.value.removeAll()
             }, onDispose: {
                 self.vFilterFreeApp.value = filterdFreeApp
-                self.sFreeAppUpdated.onNext(())
+                let isEmpty = self.vFilterFreeApp.value.count == 0
+                self.sFreeAppUpdated.onNext(isEmpty)
             })
             .subscribe(onNext: { (appItemViewModel) in
                 filterdFreeApp.append(appItemViewModel)
             })
             .disposed(by: disposeBag)
-        
+
         Observable
             .from(self.fullGrossingApp)
             .filter({ (appItemViewModel) -> Bool in
@@ -133,14 +169,15 @@ final class MainViewModel {
                 self.vFilterGrossingApp.value.removeAll()
             }, onDispose: {
                 self.vFilterGrossingApp.value = filterdGrossingApp
-                self.sGrossingAppUpdated.onNext(())
+                let isEmpty = self.vFilterGrossingApp.value.count == 0
+                self.sGrossingAppUpdated.onNext(isEmpty)
             })
             .subscribe(onNext: { (appItemViewModel) in
                 filterdGrossingApp.append(appItemViewModel)
             })
             .disposed(by: disposeBag)
-        
-        
+
+
     }
 
 

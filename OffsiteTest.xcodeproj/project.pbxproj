@@ -15,6 +15,10 @@
 		27043520208B27A400DC0C55 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2704351E208B27A400DC0C55 /* LaunchScreen.storyboard */; };
 		2704352B208B27A400DC0C55 /* OffsiteTestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2704352A208B27A400DC0C55 /* OffsiteTestTests.swift */; };
 		27043536208B27A400DC0C55 /* OffsiteTestUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27043535208B27A400DC0C55 /* OffsiteTestUITests.swift */; };
+		274885CB208E229C000E8901 /* UIViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 274885CA208E229C000E8901 /* UIViewExtension.swift */; };
+		274885CF208E31D2000E8901 /* OverlayLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 274885CE208E31D2000E8901 /* OverlayLoadingView.swift */; };
+		274885D1208E31F2000E8901 /* OverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 274885D0208E31F2000E8901 /* OverlayView.swift */; };
+		274885D3208E3520000E8901 /* OverlayTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 274885D2208E3520000E8901 /* OverlayTextView.swift */; };
 		275A19DE208C339E00DD133E /* GrossingItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 275A19DD208C339E00DD133E /* GrossingItemView.swift */; };
 		275A19E1208C344600DD133E /* FreeAppTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 275A19DF208C344600DD133E /* FreeAppTableViewCell.swift */; };
 		275A19E2208C344600DD133E /* FreeAppTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 275A19E0208C344600DD133E /* FreeAppTableViewCell.xib */; };
@@ -62,6 +66,10 @@
 		27043531208B27A400DC0C55 /* OffsiteTestUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OffsiteTestUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		27043535208B27A400DC0C55 /* OffsiteTestUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OffsiteTestUITests.swift; sourceTree = "<group>"; };
 		27043537208B27A400DC0C55 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		274885CA208E229C000E8901 /* UIViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtension.swift; sourceTree = "<group>"; };
+		274885CE208E31D2000E8901 /* OverlayLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayLoadingView.swift; sourceTree = "<group>"; };
+		274885D0208E31F2000E8901 /* OverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayView.swift; sourceTree = "<group>"; };
+		274885D2208E3520000E8901 /* OverlayTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayTextView.swift; sourceTree = "<group>"; };
 		275A19DD208C339E00DD133E /* GrossingItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrossingItemView.swift; sourceTree = "<group>"; };
 		275A19DF208C344600DD133E /* FreeAppTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeAppTableViewCell.swift; sourceTree = "<group>"; };
 		275A19E0208C344600DD133E /* FreeAppTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FreeAppTableViewCell.xib; sourceTree = "<group>"; };
@@ -136,9 +144,11 @@
 		27043514208B27A300DC0C55 /* OffsiteTest */ = {
 			isa = PBXGroup;
 			children = (
+				279861F3208B30E9006F328B /* API */,
+				274885CD208E31B9000E8901 /* Component */,
+				274885CC208E318B000E8901 /* Extension */,
 				27986260208BA554006F328B /* View */,
 				2798625F208BA543006F328B /* ViewModel */,
-				279861F3208B30E9006F328B /* API */,
 				27043515208B27A300DC0C55 /* AppDelegate.swift */,
 				27043519208B27A300DC0C55 /* Main.storyboard */,
 				2704351C208B27A400DC0C55 /* Assets.xcassets */,
@@ -164,6 +174,24 @@
 				27043537208B27A400DC0C55 /* Info.plist */,
 			);
 			path = OffsiteTestUITests;
+			sourceTree = "<group>";
+		};
+		274885CC208E318B000E8901 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				274885CA208E229C000E8901 /* UIViewExtension.swift */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
+		274885CD208E31B9000E8901 /* Component */ = {
+			isa = PBXGroup;
+			children = (
+				274885CE208E31D2000E8901 /* OverlayLoadingView.swift */,
+				274885D0208E31F2000E8901 /* OverlayView.swift */,
+				274885D2208E3520000E8901 /* OverlayTextView.swift */,
+			);
+			path = Component;
 			sourceTree = "<group>";
 		};
 		279861F3208B30E9006F328B /* API */ = {
@@ -414,6 +442,7 @@
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/Cosmos/Cosmos.framework",
 				"${BUILT_PRODUCTS_DIR}/Kingfisher/Kingfisher.framework",
+				"${BUILT_PRODUCTS_DIR}/ReachabilitySwift/Reachability.framework",
 				"${BUILT_PRODUCTS_DIR}/RxAlamofire/RxAlamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
 				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
@@ -424,6 +453,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Cosmos.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Kingfisher.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Reachability.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxAlamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
@@ -479,13 +509,17 @@
 			files = (
 				275A19ED208C57FF00DD133E /* GrossingCollectionViewCell.swift in Sources */,
 				27986224208B31DD006F328B /* AppDetailResponse.swift in Sources */,
+				274885D3208E3520000E8901 /* OverlayTextView.swift in Sources */,
 				27986264208BA5FB006F328B /* AppItemViewModel.swift in Sources */,
 				27043518208B27A300DC0C55 /* MainViewController.swift in Sources */,
+				274885CF208E31D2000E8901 /* OverlayLoadingView.swift in Sources */,
 				2798625E208B9382006F328B /* APIList.swift in Sources */,
 				275A19E1208C344600DD133E /* FreeAppTableViewCell.swift in Sources */,
 				2798622E208B87C0006F328B /* APIManager.swift in Sources */,
 				27043516208B27A300DC0C55 /* AppDelegate.swift in Sources */,
+				274885D1208E31F2000E8901 /* OverlayView.swift in Sources */,
 				2798625C208B92EA006F328B /* APIManagerExtension.swift in Sources */,
+				274885CB208E229C000E8901 /* UIViewExtension.swift in Sources */,
 				27986250208B8CA1006F328B /* AppListingResponse.swift in Sources */,
 				275A19DE208C339E00DD133E /* GrossingItemView.swift in Sources */,
 				27986262208BA578006F328B /* MainViewModel.swift in Sources */,
@@ -664,7 +698,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = OffsiteTest/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.test.OffsiteTest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -679,7 +716,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = OffsiteTest/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.test.OffsiteTest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -695,7 +735,11 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = OffsiteTestTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.test.OffsiteTestTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -712,7 +756,11 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = OffsiteTestTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.test.OffsiteTestTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -728,7 +776,11 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = OffsiteTestUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.test.OffsiteTestUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -744,7 +796,11 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = OffsiteTestUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.test.OffsiteTestUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;

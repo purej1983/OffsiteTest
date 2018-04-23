@@ -37,7 +37,8 @@ final class GrossingItemView: UIStackView {
 
         self.ivAppImage.widthAnchor.constraint(equalToConstant: 75).isActive = true
         self.ivAppImage.heightAnchor.constraint(equalToConstant: 75).isActive = true
-
+        self.ivAppImage.makeRoundCorner()
+        
         self.lblAppName.numberOfLines = 3
         self.lblAppName.lineBreakMode = .byTruncatingTail
         self.lblAppName.font = UIFont.boldSystemFont(ofSize: 12)
@@ -47,7 +48,7 @@ final class GrossingItemView: UIStackView {
         self.addArrangedSubview(self.ivAppImage)
         self.addArrangedSubview(self.lblAppName)
         self.addArrangedSubview(self.lblAppCategory)
-
+        
     }
 
     func setVM(vm: AppItemViewModel) {

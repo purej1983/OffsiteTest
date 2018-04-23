@@ -9,38 +9,112 @@
 import RxSwift
 import RxCocoa
 import SnapKit
+import Reachability
 
 final class MainViewController: UIViewController {
     private let vm = MainViewModel()
     private let disposeBag = DisposeBag()
+    private let reachability: Reachability? = Reachability()
+    private let olvLoading = OverlayLoadingView()
+    private let olvText = OverlayTextView()
     @IBOutlet weak var cvGrossing: UICollectionView!
+    @IBOutlet var lblNoRecordGrossing: UILabel!
+    @IBOutlet var lblNoRecordFree: UILabel!
     @IBOutlet weak var tvFree: UITableView!
     @IBOutlet weak var sbFilter: UISearchBar!
+
     override func viewDidLoad() {
         super.viewDidLoad()
         self.initUI()
         self.bindUI()
+        self.initReachability()
         self.vm.getData()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        try? reachability?.startNotifier()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        reachability?.stopNotifier()
+    }
 
+    private func initReachability() {
+        reachability?.whenReachable = { reachability in
+            self.sbFilter.text = ""
+            self.vm.reloadPage()
+        }
+        reachability?.whenUnreachable = { reachability in
+            let alertView = UIAlertController.init(title: "Network is unreachable", message: "Please turn on mobile data or use Wi-Fi to access data", preferredStyle: .alert)
+            let okAction = UIAlertAction.init(title: "OK", style: .default, handler: nil)
+            alertView.addAction(okAction)
+            self.present(alertView, animated: true, completion: nil)
+        }
+    }
+    
     private func initUI() {
         self.cvGrossing.register(GrossingCollectionViewCell.self, forCellWithReuseIdentifier: String(describing: GrossingCollectionViewCell.self))
         self.tvFree.register(UINib.init(nibName: String(describing: FreeAppTableViewCell.self), bundle: Bundle.main), forCellReuseIdentifier: String(describing: FreeAppTableViewCell.self))
+
     }
 
     private func bindUI() {
+        self.vm.sIsLoading
+            .observeOn(MainScheduler.instance)
+            .subscribe(onNext: { (isLoading) in
+                self.toggleLoading(isLoading: isLoading)
+            })
+            .disposed(by: disposeBag)
+        
+        self.vm.sError
+            .observeOn(MainScheduler.instance)
+            .subscribe(onNext: { (error) in
+                
+            })
+            .disposed(by: disposeBag)
+        
+        
+        self.vm.sFirstLoad
+            .observeOn(MainScheduler.instance)
+            .subscribe(onNext: { (_) in
+                self.sbFilter.isHidden = false
+                self.tvFree.isHidden = false
+                self.bindSearchBar()
+            })
+            .disposed(by: disposeBag)
+
         self.vm.sGrossingAppUpdated
             .observeOn(MainScheduler.instance)
-            .subscribe(onNext: { (v) in
+            .subscribe(onNext: { (isEmpty) in
+                if !self.lblNoRecordGrossing.isDescendant(of: self.view) {
+                    self.cvGrossing.addSubview(self.lblNoRecordGrossing)
+                    self.lblNoRecordGrossing.snp.makeConstraints {
+                        $0.width.centerX.centerY.equalToSuperview()
+                    }
+                }
+                self.lblNoRecordGrossing.isHidden = !isEmpty
                 self.cvGrossing.reloadData()
             }).disposed(by: disposeBag)
-        
+
         self.vm.sFreeAppUpdated
             .observeOn(MainScheduler.instance)
-            .subscribe(onNext: { (v) in
+            .subscribe(onNext: { (isEmpty) in
+                if !self.lblNoRecordFree.isDescendant(of: self.view) {
+                    self.view.addSubview(self.lblNoRecordFree)
+                    self.lblNoRecordFree.snp.makeConstraints {
+                        $0.width.centerX.centerY.equalTo(self.tvFree)
+                    }
+                }
+                self.lblNoRecordFree.isHidden = !isEmpty
                 self.tvFree.reloadData()
             }).disposed(by: disposeBag)
+
         
+    }
+    
+    private func bindSearchBar() {
         self.sbFilter
             .rx
             .text
@@ -51,22 +125,34 @@ final class MainViewController: UIViewController {
             })
             .disposed(by: disposeBag)
     }
-}
-
-extension UIStackView {
-
-    func removeAllArrangedSubviews() {
-
-        let removedSubviews = arrangedSubviews.reduce([]) { (allSubviews, subview) -> [UIView] in
-            self.removeArrangedSubview(subview)
-            return allSubviews + [subview]
+    
+    private func showLoading() {
+        assert(Thread.isMainThread, "Overlay can only be shown on main thread.")
+        olvLoading.show()
+    }
+    
+    private func hideLoading(animated: Bool = true) {
+        olvLoading.hide(olvLoading)
+    }
+    
+    private func toggleLoading(isLoading: Bool) {
+        assert(Thread.isMainThread, "Overlay can only be shown on main thread.")
+        isLoading ? olvLoading.show() : olvLoading.hide(olvLoading)
+    }
+    
+    private func showErrorDialog(error: Error) {
+        self.hideLoading()
+        self.showText(error.localizedDescription)
+    }
+    
+    private func showText(_ text: String?) {
+        if text == nil || text?.count == 0 {
+            return
         }
-
-        // Deactivate all constraints
-        NSLayoutConstraint.deactivate(removedSubviews.flatMap({ $0.constraints }))
-
-        // Remove the views from self
-        removedSubviews.forEach({ $0.removeFromSuperview() })
+        
+        olvText.setText(text!)
+        olvText.show()
+        olvText.hide(after: 2)
     }
 }
 
@@ -93,25 +179,30 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.vm.vFilterFreeApp.value.count
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "FreeAppTableViewCell", for: indexPath) as! FreeAppTableViewCell
         cell.setVM(vm: self.vm.vFilterFreeApp.value[indexPath.row])
+        if indexPath.row % 2 == 0 {
+            cell.ivAppImage.makeRoundCorner()
+        } else {
+            cell.ivAppImage.makeCircle()
+        }
         return cell
     }
-    
+
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if self.vm.requireFetchNext(row: indexPath.row) {
             self.vm.fetchNextPage()
         }
     }
-    
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
+
     }
 }
 
