@@ -31,4 +31,9 @@ final class AppItemViewModel {
         self.vAppUserRating.value = rating
         self.vAppUserCommentCount.value = commentCount
     }
+    
+    public func containsKeyWord(text: String) -> Bool {
+        let appName = vAppName.value
+        return appName.contains(text)
+    }
 }

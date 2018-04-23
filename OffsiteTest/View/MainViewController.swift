@@ -7,6 +7,7 @@
 //
 
 import RxSwift
+import RxCocoa
 import SnapKit
 
 final class MainViewController: UIViewController {
@@ -14,12 +15,12 @@ final class MainViewController: UIViewController {
     private let disposeBag = DisposeBag()
     @IBOutlet weak var cvGrossing: UICollectionView!
     @IBOutlet weak var tvFree: UITableView!
+    @IBOutlet weak var sbFilter: UISearchBar!
     override func viewDidLoad() {
         super.viewDidLoad()
         self.initUI()
         self.bindUI()
         self.vm.getData()
-        // Do any additional setup after loading the view, typically from a nib.
     }
 
     private func initUI() {
@@ -39,13 +40,17 @@ final class MainViewController: UIViewController {
             .subscribe(onNext: { (v) in
                 self.tvFree.reloadData()
             }).disposed(by: disposeBag)
+        
+        self.sbFilter
+            .rx
+            .text
+            .throttle(0.5, scheduler: MainScheduler.instance)
+            .distinctUntilChanged()
+            .subscribe(onNext: { (query) in
+                self.vm.applyFilter(text: query)
+            })
+            .disposed(by: disposeBag)
     }
-
-    private func gotGrossing(grossingApps: [AppItemViewModel]) {
-
-    }
-
-
 }
 
 extension UIStackView {
