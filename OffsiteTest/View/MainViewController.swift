@@ -30,12 +30,12 @@ final class MainViewController: UIViewController {
         self.initReachability()
         self.vm.getData()
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         try? reachability?.startNotifier()
     }
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         reachability?.stopNotifier()
@@ -49,7 +49,7 @@ final class MainViewController: UIViewController {
             self.present(alertView, animated: true, completion: nil)
         }
     }
-    
+
     private func initUI() {
         self.cvGrossing.register(GrossingCollectionViewCell.self, forCellWithReuseIdentifier: String(describing: GrossingCollectionViewCell.self))
         self.tvFree.register(UINib.init(nibName: String(describing: FreeAppTableViewCell.self), bundle: Bundle.main), forCellReuseIdentifier: String(describing: FreeAppTableViewCell.self))
@@ -63,15 +63,15 @@ final class MainViewController: UIViewController {
                 self.toggleLoading(isLoading: isLoading)
             })
             .disposed(by: disposeBag)
-        
+
         self.vm.sError
             .observeOn(MainScheduler.instance)
             .subscribe(onNext: { (error) in
-                
+
             })
             .disposed(by: disposeBag)
-        
-        
+
+
         self.vm.sFirstLoad
             .observeOn(MainScheduler.instance)
             .subscribe(onNext: { (_) in
@@ -107,9 +107,9 @@ final class MainViewController: UIViewController {
                 self.tvFree.reloadData()
             }).disposed(by: disposeBag)
 
-        
+
     }
-    
+
     private func bindSearchBar() {
         self.sbFilter
             .rx
@@ -121,31 +121,31 @@ final class MainViewController: UIViewController {
             })
             .disposed(by: disposeBag)
     }
-    
+
     private func showLoading() {
         assert(Thread.isMainThread, "Overlay can only be shown on main thread.")
         olvLoading.show()
     }
-    
+
     private func hideLoading(animated: Bool = true) {
         olvLoading.hide(olvLoading)
     }
-    
+
     private func toggleLoading(isLoading: Bool) {
         assert(Thread.isMainThread, "Overlay can only be shown on main thread.")
         isLoading ? olvLoading.show() : olvLoading.hide(olvLoading)
     }
-    
+
     private func showErrorDialog(error: Error) {
         self.hideLoading()
         self.showText(error.localizedDescription)
     }
-    
+
     private func showText(_ text: String?) {
         if text == nil || text?.count == 0 {
             return
         }
-        
+
         olvText.setText(text!)
         olvText.show()
         olvText.hide(after: 2)
@@ -197,7 +197,7 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
             self.vm.fetchNextPage()
         }
     }
-    
+
     func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         return nil
     }

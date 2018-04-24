@@ -34,11 +34,10 @@ final class MainViewModel {
         Observable.zip(topGrossing, topFreeApp)
             .map { ($0.0.feed?.entry, $0.1.feed?.entry) }
             .do(onError: { (error) in
+                self.sIsLoading.onNext(false)
                 self.sError.onNext(error)
             }, onSubscribed: {
                 self.sIsLoading.onNext(true)
-            }, onDispose: {
-                self.sIsLoading.onNext(false)
             })
             .subscribe(onNext: { (grossing, free) in
                 self.gotGrossingApps(entry: grossing)
@@ -64,9 +63,6 @@ final class MainViewModel {
 
         if let entry = entry {
             self.fullFreeApp.append(contentsOf: entry.map { AppItemViewModel.init(entry: $0) })
-            self.fullFreeApp.forEach { (item) in
-                print("appName: \(item.vAppName.value)")
-            }
             self.fetchPaginatedDataSource()
         } else {
             self.sFreeAppUpdated.onNext(true)
@@ -87,7 +83,7 @@ final class MainViewModel {
     }
 
     private func fetchPaginatedDataSource() {
-        
+
         Observable.from(self.fullFreeApp)
             .take(pageNo * pageSize + pageSize)
             .takeLast(pageSize)
@@ -109,6 +105,10 @@ final class MainViewModel {
                 self.sFreeAppUpdated.onNext(isEmpty)
                 self.sIsLoading.onNext(false)
 
+            })
+            .do(onError: { (error) in
+                self.sIsLoading.onNext(false)
+                self.sError.onNext(error)
             })
             .subscribe(onNext: { (appItemViewModel, detailResponse) in
                 let result = detailResponse.results?.first
@@ -166,9 +166,5 @@ final class MainViewModel {
                 filterdGrossingApp.append(appItemViewModel)
             })
             .disposed(by: disposeBag)
-
-
     }
-
-
 }
