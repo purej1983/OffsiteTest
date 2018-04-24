@@ -42,16 +42,16 @@ public final class APIManager {
         // Log Error
         .do(onError: { error in
             #if DEBUG
-                print("=================Response:\(String(describing: path))===================")
-                print(error.localizedDescription)
+                //print("=================Response:\(String(describing: path))===================")
+                //print(error.localizedDescription)
             #endif
             throw error
         })
             .map({ (response, data) -> T in
                 let responseString = String.init(data: data, encoding: .utf8)
                 #if DEBUG
-                    print("=================Response:\(String(describing: path))===================")
-                    print("=================Response:\(String(describing: responseString))===================")
+                    //print("=================Response:\(String(describing: path))===================")
+                    //print("=================Response:\(String(describing: responseString))===================")
                 #endif
                 let jsonDecoder = JSONDecoder()
                 return try jsonDecoder.decode(T.self, from: data)

@@ -28,12 +28,12 @@ final class FreeAppTableViewCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
-    
+
     func setVM(vm: AppItemViewModel) {
         self.vm = vm
         self.bindUI()
     }
-    
+
     private func bindUI() {
         guard let vm = self.vm else {
             return
@@ -45,28 +45,28 @@ final class FreeAppTableViewCell: UITableViewCell {
                 self.ivAppImage.kf.setImage(with: url)
             })
             .disposed(by: disposeBag)
-        
+
         vm.vAppName
             .asObservable()
             .subscribe(onNext: {
                 self.lblAppName.text = $0
             })
             .disposed(by: disposeBag)
-        
+
         vm.vAppCategory
             .asObservable()
             .subscribe(onNext: {
                 self.lblAppCategory.text = $0
             })
             .disposed(by: disposeBag)
-        
+
         vm.vAppUserRating
             .asObservable()
             .subscribe(onNext: { (rating) in
                 self.vRating.rating = rating ?? 0.0
             })
             .disposed(by: disposeBag)
-        
+
         vm.vAppUserCommentCount
             .asObservable()
             .subscribe(onNext: { (rating) in
@@ -78,5 +78,5 @@ final class FreeAppTableViewCell: UITableViewCell {
             })
             .disposed(by: disposeBag)
     }
-    
+
 }

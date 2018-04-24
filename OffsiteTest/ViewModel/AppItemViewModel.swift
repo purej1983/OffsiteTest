@@ -18,10 +18,10 @@ final class AppItemViewModel {
     private let category: String!
     private let author: String!
     private let summary: String!
-    
-    
-    
-    
+
+
+
+
     public convenience init(entry: Entry) {
         let id = entry.id?.attributes?.imid ?? ""
         let name = entry.imname?.label ?? ""
@@ -46,15 +46,15 @@ final class AppItemViewModel {
         self.vAppCategory.value = category
         self.vAppUserRating.value = rating
         self.vAppUserCommentCount.value = commentCount
-        
+
         self.name = name
         self.category = category
         self.author = author
         self.summary = summary
     }
-    
+
     public func containsKeyWord(text: String) -> Bool {
-        
+
         return self.name.contains(text) ||
             self.category.contains(text) ||
             self.summary.contains(text) ||
